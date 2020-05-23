@@ -30,12 +30,13 @@ void WaitingVehicles::permitEntryToFirstInQueue()
     std::lock_guard<std::mutex> lock(_mutex);
 
     // fulfill first promise in the queue
+    auto firstVehicle = _promises.begin();
     auto firstPromise = _promises.begin();
     firstPromise->set_value();
 
     // remove front elements from both queues
-    _vehicles.erase(_vehicles.begin());
-    _promises.erase(_vehicles.begin());
+    _vehicles.erase(firstVehicle);
+    _promises.erase(firstPromise);
 }
 
 /* Implementation of class "Intersection" */
