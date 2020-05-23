@@ -29,16 +29,13 @@ void WaitingVehicles::permitEntryToFirstInQueue()
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
-    // get entries from the front of both queues
+    // fulfill first promise in the queue
     auto firstPromise = _promises.begin();
-    auto firstVehicle = _vehicles.begin();
-
-    // fulfill promise and send signal back that permission to enter has been granted
     firstPromise->set_value();
 
     // remove front elements from both queues
-    _vehicles.erase(firstVehicle);
-    _promises.erase(firstPromise);
+    _vehicles.erase(_vehicles.begin());
+    _promises.erase(_vehicles.begin());
 }
 
 /* Implementation of class "Intersection" */
@@ -77,12 +74,12 @@ void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
     lck.unlock();
 
     // add new vehicle to the end of the waiting line
-    std::promise<void> prmsVehicleAllowedToEnter;
-    std::future<void> ftrVehicleAllowedToEnter = prmsVehicleAllowedToEnter.get_future();
-    _waitingVehicles.pushBack(vehicle, std::move(prmsVehicleAllowedToEnter));
+    std::promise<void> promiseVehicleAllowed;
+    std::future<void> futureVehicleAllowed = promiseVehicleAllowed.get_future();
+    _waitingVehicles.pushBack(vehicle, std::move(promiseVehicleAllowed));
 
     // wait until the vehicle is allowed to enter
-    ftrVehicleAllowedToEnter.wait();
+    futureVehicleAllowed.wait();
     lck.lock();
     std::cout << "Intersection #" << _id << ": Vehicle #" << vehicle->getID() << " is granted entry." << std::endl;
 
