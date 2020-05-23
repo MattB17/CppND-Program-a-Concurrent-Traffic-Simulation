@@ -1,3 +1,0 @@
-/home/workspace/Lesson2/build/CMakeFiles/rebuild_cache.dir
-/home/workspace/Lesson2/build/CMakeFiles/traffic_simulation.dir
-/home/workspace/Lesson2/build/CMakeFiles/edit_cache.dir
