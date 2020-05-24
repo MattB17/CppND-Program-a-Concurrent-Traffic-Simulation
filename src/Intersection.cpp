@@ -29,7 +29,7 @@ void WaitingVehicles::permitEntryToFirstInQueue()
     std::lock_guard<std::mutex> lck(_mutex);
 
     // fulfill first promise in the queue
-    auto firstVehicle = _promises.begin();
+    auto firstVehicle = _vehicles.begin();
     auto firstPromise = _promises.begin();
     firstPromise->set_value();
 
