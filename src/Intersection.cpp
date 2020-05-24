@@ -12,14 +12,13 @@
 
 int WaitingVehicles::getSize()
 {
-    std::lock_guard<std::mutex> lock(_mutex);
-
+    std::lock_guard<std::mutex> lck(_mutex);
     return _vehicles.size();
 }
 
 void WaitingVehicles::pushBack(std::shared_ptr<Vehicle> vehicle, std::promise<void> &&promise)
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> lck(_mutex);
 
     _vehicles.push_back(vehicle);
     _promises.push_back(std::move(promise));
@@ -27,7 +26,7 @@ void WaitingVehicles::pushBack(std::shared_ptr<Vehicle> vehicle, std::promise<vo
 
 void WaitingVehicles::permitEntryToFirstInQueue()
 {
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::mutex> lck(_mutex);
 
     // fulfill first promise in the queue
     auto firstVehicle = _promises.begin();
@@ -70,7 +69,7 @@ std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<
 // adds a new vehicle to the queue and returns once the vehicle is allowed to enter
 void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
 {
-    std::unique_lock<std::mutex> lck(_mtx);
+    std::unique_lock<std::mutex> lck(_mtxCout);
     std::cout << "Intersection #" << _id << "::addVehicleToQueue: thread id = " << std::this_thread::get_id() << std::endl;
     lck.unlock();
 
