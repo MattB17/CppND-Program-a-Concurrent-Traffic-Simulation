@@ -84,7 +84,6 @@ void TrafficLight::cycleThroughPhases() {
 
       std::random_device rd;
       std::mt19937 eng(rd());
-      std::uniform_int_distribution<> distr(4000.0, 6000.0);
       double ms = distr(eng);
     }
   }
