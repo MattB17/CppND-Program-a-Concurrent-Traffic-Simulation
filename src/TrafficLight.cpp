@@ -57,15 +57,16 @@ void TrafficLight::simulate()
 void TrafficLight::cycleThroughPhases() {
   // start stopwatch.
   auto prevUpdate = std::chrono::system_clock::now();
+
+  // generate a random number to determine when the traffic light should change.
+  std::random_device rd;
+  std::mt19937 eng(rd());
+  std::uniform_int_distribution<> distr(4000.0, 6000.0);
+  double ms = distr(eng);
+
   while(true) {
     // put thread to sleep
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
-
-    // generate a random number to determine when the traffic light should change.
-    std::random_device rd;
-    std::mt19937 eng(rd());
-    std::uniform_int_distribution<> distr(4000.0, 6000.0);
-    double ms = distr(eng);
 
     // compute the time since last change and update if it is above threshold.
     double elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds> (std::chrono::system_clock::now() - prevUpdate).count();
