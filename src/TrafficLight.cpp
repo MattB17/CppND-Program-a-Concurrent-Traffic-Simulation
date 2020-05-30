@@ -81,6 +81,11 @@ void TrafficLight::cycleThroughPhases() {
       TrafficLightPhase phase = _currentPhase;
       _messages->send(std::move(phase));
       prevUpdate = std::chrono::system_clock::now();
+
+      std::random_device rd;
+      std::mt19937 eng(rd());
+      std::uniform_int_distribution<> distr(4000.0, 6000.0);
+      double ms = distr(eng);
     }
   }
 }
