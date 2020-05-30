@@ -31,12 +31,13 @@ void MessageQueue<T>::send(T &&msg)
 TrafficLight::TrafficLight()
 {
     _currentPhase = TrafficLightPhase::red;
+    _messages = std::make_shared<MessageQueue<TrafficLightPhase>>();
 }
 
 void TrafficLight::waitForGreen()
 {
     while (true) {
-      TrafficLightPhase phase = _messages.receive();
+      TrafficLightPhase phase = _messages->receive();
       if (phase == TrafficLightPhase::green) {
         return;
       }
@@ -50,7 +51,7 @@ TrafficLightPhase TrafficLight::getCurrentPhase()
 
 void TrafficLight::simulate()
 {
-    _threads.emplace_back(std::thread(TrafficLight::cycleThroughPhases));
+    _threads.emplace_back(std::thread(&TrafficLight::cycleThroughPhases, this));
 }
 
 void TrafficLight::cycleThroughPhases() {
@@ -76,8 +77,9 @@ void TrafficLight::cycleThroughPhases() {
       }
 
       // move the phase into the queue and restart the clock.
-      _messages.send(std::move(_currentPhase));
-      prevUpdate = std::chrono::system_clock::now()
+      TrafficLightPhase phase = _currentPhase;
+      _messages->send(std::move(phase));
+      prevUpdate = std::chrono::system_clock::now();
     }
   }
 }

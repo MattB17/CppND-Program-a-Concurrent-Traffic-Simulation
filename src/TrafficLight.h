@@ -31,14 +31,14 @@ enum TrafficLightPhase
 class TrafficLight : public TrafficObject
 {
 public:
-    TrafficLight() : _currentPhase(TrafficLightPhase::green) {};
+    TrafficLight();
     void waitForGreen();
     void simulate();
     TrafficLightPhase getCurrentPhase();
 private:
     void cycleThroughPhases();
 
-    MessageQueue<TrafficLightPhase> _messages;
+    std::shared_ptr<MessageQueue<TrafficLightPhase>> _messages;
     TrafficLightPhase _currentPhase;
     std::condition_variable _cond;
     std::mutex _mutex;
